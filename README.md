@@ -1,18 +1,28 @@
-## Project Overview
-This project aims to develop a comprehensive IoT predictive maintenance system for aircraft engines. It uses the N-CMAPSS dataset to predict the Remaining Useful Life (RUL) of engines, detect anomalies in sensor data, and provide insights through exploratory data analysis and explainable AI. The dashboard is built using Streamlit and includes the following components:
+## Comprehensive IoT Predictive Maintenance Dashboard for Aircraft Engines
 
-- **RUL Prediction**: Predicts the RUL of an engine using an LSTM model.
-- **Real-Time Streaming**: Simulates real-time RUL predictions using streaming data.
-- **Exploratory Data Analysis (EDA)**: Visualizes RUL distributions, sensor trends, and correlations.
-- **Explainable AI (SHAP)**: Provides feature importance for RUL predictions using SHAP.
-- **Anomaly Detection**: Detects anomalies in sensor data using an autoencoder.
+## Project Overview
+This project implements a predictive maintenance dashboard for aircraft engines using the N-CMAPSS dataset. The dashboard provides Remaining Useful Life (RUL) predictions, anomaly detection, exploratory data analysis (EDA), and explainable AI (SHAP analysis) using a combination of LSTM models and autoencoders. The app is built with Streamlit and can be run locally or deployed on the cloud.
+The project was developed in Google Colab, with optimizations to ensure it runs on the free tier despite the large dataset size (14.7 GB). Key features include RUL prediction, real-time monitoring, and anomaly detection, making it a comprehensive tool for aircraft engine maintenance.
+
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Dataset](#dataset)
+- [Requirements](#requirements)
+- [Setup Instructions](#setup-instructions)
+- [Usage](#usage)
+- [Cloud Deployment](#cloud-deployment)
+- [Project Structure](#project-structure)
+- [Results](#results)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
-- **RUL Prediction**: Upload sensor data (CSV) to predict the RUL of an engine.
+- **RUL Prediction**: Upload sensor data (CSV) to predict the RUL of an engine using an LSTM model.
 - **Real-Time Monitoring**: Simulate real-time RUL predictions with streaming data.
-- **EDA**: Visualize RUL distributions, sensor trends, and correlations for the first 10 flights.
-- **Explainable AI**: Use SHAP to understand the impact of sensor features on RUL predictions.
-- **Anomaly Detection**: Identify anomalies in sensor data using an autoencoder.
+- **Exploratory Data Analysis (EDA)**: Visualize RUL distributions, sensor trends, and correlations for the first 10 flights of a selected unit.
+- **Explainable AI (SHAP)**: Provides feature importance for RUL predictions using SHAP analysis.
+- **Anomaly Detection**: Detect anomalies in sensor data using an autoencoder.
 - **Email Alerts**: Send email alerts when RUL drops below a threshold (requires email configuration).
 
 ## Dataset
@@ -22,7 +32,7 @@ The project uses the [N-CMAPSS dataset](https://phm-datasets.s3.amazonaws.com/NA
 - Auxiliary data (e.g., unit number, cycle).
 - Target variable (RUL).
 
-**Note**: The dataset is large (14.7 GB). Due to GitHub’s file size limits, it is not included in this repository. The code automatically downloads and extracts the dataset during setup.
+**Size**: The dataset is 14.7 GB when extracted. Due to GitHub’s file size limits, it is not included in this repository. The code automatically downloads and extracts the dataset during setup.
 
 ## Requirements
 - Python 3.8+
@@ -41,44 +51,42 @@ smtplib
 pyngrok==7.0.0
 
 
-
 ## Setup Instructions
-1. **Clone the Repository**:
- ```bash
+**Clone the Repository**:
  git clone https://github.com/your-username/your-repo-name.git
  cd your-repo-name
 
-2. Create a Virtual Environment (optional but recommended):
+**Create a Virtual Environment (optional )**:
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-3. Install Dependencies:
+**Install Dependencies**:
 pip install -r requirements.txt
 
-4. Download the Dataset:
-•	The dataset is automatically downloaded and extracted when you run the code (Step 1). Alternatively, you can manually download it from here and place it in the project directory as CMAPSSv2.zip.
+**Download the Dataset**:
+- The dataset is automatically downloaded and extracted when you run the code (Step 1). Alternatively, you can manually download it from here and place it in the project directory as CMAPSSv2.zip.
 
-5. Run the Project:
-•	The project is divided into 9 steps, each in a separate Jupyter notebook cell or script. You can run the steps sequentially in a Jupyter notebook or as a single script (main.py).
-•	To run the dashboard locally:
-
+**Run the Project**:
+- The project is divided into 9 steps, each in a separate Jupyter notebook cell or script. You can run the steps sequentially in a Jupyter notebook or as a single script (main.py).
+- To run the dashboard locally:
 streamlit run app.py
 To deploy using ngrok (for public access), set your ngrok authtoken in app.py and run the deployment step (Step 9).
 
 ## Usage
-1.	Run the Dashboard Locally:
-o	After setting up the project, run:
-	streamlit run app.py
-	Open the provided URL (e.g., http://localhost:8501) in your browser.
+1. Run the Dashboard Locally:
+- After setting up the project, run:
+  streamlit run app.py
+  Open the provided URL (e.g., http://localhost:8501) in your browser.
+
 2. Navigate the Dashboard:
-•	RUL Prediction: Upload a CSV file with sensor data (e.g., test_sensor_data.csv) to predict RUL.
-•	Real-Time Streaming: View simulated real-time RUL predictions.
-•	Exploratory Data Analysis: Visualize RUL distributions, sensor trends, and correlations.
-•	Explainable AI: View SHAP analysis for feature importance.
-•	Anomaly Detection: Upload a CSV file to detect anomalies in sensor data.
+• RUL Prediction: Upload a CSV file with sensor data (e.g., test_sensor_data.csv) to predict RUL.
+• Real-Time Streaming: View simulated real-time RUL predictions.
+• Exploratory Data Analysis: Visualize RUL distributions, sensor trends, and correlations.
+• Explainable AI: View SHAP analysis for feature importance.
+• Anomaly Detection: Upload a CSV file to detect anomalies in sensor data.
 
 3.Example Input:
-•	Use test_sensor_data.csv (generated in Step 8) as a sample input for RUL prediction and anomaly detection. The file contains the last 100 rows of normalized sensor data for the first 10 flights.
+• Use test_sensor_data.csv (generated in Step 8) as a sample input for RUL prediction and anomaly detection. The file contains the last 100 rows of normalized sensor data for the first 10 flights.
 
 Cloud Deployment(Optional)
 Option 1: Streamlit Community Cloud (Recommended for Prototyping)
@@ -109,23 +117,23 @@ your-repo-name/
 └── README.md               # This file
 
 Results
-•	RUL Prediction: The LSTM model achieves a test RMSE of 2.95 flights, meaning predictions are within ±3 flights of the actual RUL.
-•	Anomaly Detection: The autoencoder detects anomalies in the test set, identifying potential issues in sensor data.
-•	EDA: Visualizations show RUL distributions, sensor trends, and correlations for the first 10 flights.
-•	SHAP Analysis: SHAP plots highlight the most important sensor features for RUL predictions.
+• RUL Prediction: The LSTM model achieves a test RMSE of 2.95 flights, meaning predictions are within ±3 flights of the actual RUL.
+• Anomaly Detection: The autoencoder detects anomalies in the test set, identifying potential issues in sensor data.
+• EDA: Visualizations show RUL distributions, sensor trends, and correlations for the first 10 flights.
+• SHAP Analysis: SHAP plots highlight the most important sensor features for RUL predictions.
 
-•  Sample Output:
-•	Predicted RUL for test_sensor_data.csv: 38.95 flights.
-•	RUL Variance (First 10 Flights): 98.1031.
-•	Sensor Trends: Sharp drop in sensor values (T30, T50, P24) in the last 10 time steps, indicating potential degradation.
+**Sample Output**:
+• Predicted RUL for test_sensor_data.csv: 38.95 flights.
+• RUL Variance (First 10 Flights): 98.1031.
+• Sensor Trends: Sharp drop in sensor values (T30, T50, P24) in the last 10 time steps, indicating potential degradation.
 
 Contributing
 Contributions are welcome! Please follow these steps:
-1.	Fork the repository.
-2.	Create a new branch: git checkout -b feature/your-feature-name.
-3.	Make your changes and commit: git commit -m "Add your feature".
-4.	Push to your branch: git push origin feature/your-feature-name.
-5.	Create a pull request.
+- Fork the repository.
+- Create a new branch: git checkout -b feature/your-feature-name.
+- Make your changes and commit: git commit -m "Add your feature".
+- Push to your branch: git push origin feature/your-feature-name.
+- Create a pull request.
 
 License
 This project is licensed under the MIT License. 
