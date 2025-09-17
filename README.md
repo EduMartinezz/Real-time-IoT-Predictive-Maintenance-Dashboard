@@ -63,15 +63,17 @@ This project demonstrates a **full end-to-end workflow**: data streaming, featur
 
 **Controls + KPIs + Live Monitor**
 
-![Controls and KPIs](screenshots/controls_kpis.png)
+(https://github.com/EduMartinezz/Real-time-IoT-Predictive-Maintenance-Dashboard/blob/main/predict.PNG)
 
 **Dual-axis vibration/temperature & Risk plots**
 
-![Sensor plots](screenshots/sensor_plots.png)
+(https://github.com/EduMartinezz/Real-time-IoT-Predictive-Maintenance-Dashboard/blob/main/predict1.PNG)
+(https://github.com/EduMartinezz/Real-time-IoT-Predictive-Maintenance-Dashboard/blob/main/predict2.PNG)
 
 **Alerts + Drift checks**
 
-![Alerts and Drift](screenshots/alerts_drift.png)
+https://github.com/EduMartinezz/Real-time-IoT-Predictive-Maintenance-Dashboard/blob/main/predict3.PNG
+https://github.com/EduMartinezz/Real-time-IoT-Predictive-Maintenance-Dashboard/blob/main/predict4.PNG
 
 ---
 
