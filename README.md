@@ -1,162 +1,126 @@
-## Comprehensive IoT Predictive Maintenance Dashboard for Aircraft Engines
+# 🔧 Real-Time IoT Predictive Maintenance Dashboard
 
-## Project Overview
-This project implements a predictive maintenance dashboard for aircraft engines using the N-CMAPSS dataset. The dashboard provides Remaining Useful Life (RUL) predictions, anomaly detection, exploratory data analysis (EDA), and explainable AI (SHAP analysis) using a combination of LSTM models and autoencoders. The app is built with Streamlit and can be run locally or deployed on the cloud.
-The project was developed in Google Colab, with optimizations to ensure it runs on the free tier despite the large dataset size (14.7 GB). Key features include RUL prediction, real-time monitoring, and anomaly detection, making it a comprehensive tool for aircraft engine maintenance.
+A **real-time machine learning web app** that simulates IoT sensor streams and predicts equipment failure risk.  
+This project demonstrates a **full end-to-end workflow**: data streaming, feature engineering, anomaly detection, online learning, drift monitoring, and deployment via Streamlit.
 
-## Table of Contents
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Dataset](#dataset)
-- [Requirements](#requirements)
-- [Setup Instructions](#setup-instructions)
-- [Usage](#usage)
-- [Cloud Deployment](#cloud-deployment)
-- [Project Structure](#project-structure)
-- [Results](#results)
-- [Contributing](#contributing)
-- [License](#license)
+---
 
-## Features
-- **RUL Prediction**: Upload sensor data (CSV) to predict the RUL of an engine using an LSTM model.
-- **Real-Time Monitoring**: Simulate real-time RUL predictions with streaming data.
-- **Exploratory Data Analysis (EDA)**: Visualize RUL distributions, sensor trends, and correlations for the first 10 flights of a selected unit.
-- **Explainable AI (SHAP)**: Provides feature importance for RUL predictions using SHAP analysis.
-- **Anomaly Detection**: Detect anomalies in sensor data using an autoencoder.
-- **Email Alerts**: Send email alerts when RUL drops below a threshold (requires email configuration).
+## 📖 Project Overview
+- Simulates **industrial IoT sensor data** (vibration, temperature, pressure, RPM).  
+- Maintains a **sliding time window** of live signals for monitoring.  
+- Computes **statistical + anomaly features** (z-scores, EWMA, rolling patterns).  
+- Blends **unsupervised anomaly scores** with **online learning risk scores**.  
+- Provides an interactive **Streamlit dashboard** with live plots, alerts, and drift checks.  
 
-## Dataset
-The project uses the [N-CMAPSS dataset](https://phm-datasets.s3.amazonaws.com/NASA/17.+Turbofan+Engine+Degradation+Simulation+Data+Set+2.zip) (Turbofan Engine Degradation Simulation Data Set 2), which contains run-to-failure data for aircraft engines under real flight conditions. The dataset includes:
-- Sensor measurements (e.g., temperatures, pressures, fan speeds).
-- Scenario descriptors (e.g., altitude, Mach number).
-- Auxiliary data (e.g., unit number, cycle).
-- Target variable (RUL).
+---
 
-**Size**: The dataset is 14.7 GB when extracted. Due to GitHub’s file size limits, it is not included in this repository. The code automatically downloads and extracts the dataset during setup.
+## 🚀 Features
 
-## Requirements
-- Python 3.8+
-- Libraries listed in `requirements.txt`:
+### 1. Data Streaming
+- Synthetic simulator generates live signals for multiple sensors.  
+- Supports **drift injection** (to test stability) and **failure spikes** (to trigger alerts).  
+- Rolling window ensures only the most recent data is kept.  
 
-streamlit==1.24.0 
-numpy==1.24.3 
-pandas==2.0.2 
-h5py==3.9.0 
-tensorflow==2.12.0 
-scikit-learn==1.2.2 
-matplotlib==3.7.1 
-seaborn==0.12.2 
-shap==0.42.0 
-smtplib 
-pyngrok==7.0.0
+### 2. Feature Engineering
+- **Robust z-scores** (Median Absolute Deviation).  
+- **EWMA (Exponentially Weighted Moving Average)**.  
+- Real-time derived anomaly features per sensor.  
 
+### 3. Modeling
+- **Online classifier**: `SGDClassifier` (log-loss) with `partial_fit` updates.  
+- Trains incrementally when weak labels are available.  
+- Blends anomaly detection with supervised learning via a weighted risk score.  
 
-## Setup Instructions
-**Clone the Repository**:
- git clone https://github.com/your-username/your-repo-name.git
- cd your-repo-name
+### 4. Interactive Dashboard
+- **Dual-axis plots**: vibration (blue) + temperature (orange).  
+- **Risk plots** with configurable threshold.  
+- **Sidebar controls**:
+  - Alert threshold  
+  - Anomaly/model blending  
+  - Online training rate  
+  - Window size (plot last N points)  
+- **Sidebar KPIs**:
+  - Active alerts count  
+  - Average + max risk across sensors  
+  - Per-sensor risk values  
 
-**Create a Virtual Environment (optional )**:
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+### 5. Alerts
+- Alerts triggered when risk ≥ threshold.  
+- Cooldown prevents spamming.  
+- Alerts displayed with timestamp, risk, and features.  
 
-**Install Dependencies**:
+### 6. Drift & Data Quality
+- **Population Stability Index (PSI)**: feature drift vs baseline.  
+- Data quality checks: missing values, flatlines, excessive spikes.  
+- Drift levels:
+  - PSI < 0.10 = stable  
+  - 0.10–0.25 = moderate shift  
+  - >0.25 = significant drift  
+
+---
+
+## 📊 Example Dashboard
+
+**Controls + KPIs + Live Monitor**
+
+![Controls and KPIs](screenshots/controls_kpis.png)
+
+**Dual-axis vibration/temperature & Risk plots**
+
+![Sensor plots](screenshots/sensor_plots.png)
+
+**Alerts + Drift checks**
+
+![Alerts and Drift](screenshots/alerts_drift.png)
+
+---
+
+## 🛠️ Tech Stack
+- **Language:** Python  
+- **Libraries:** `pandas`, `numpy`, `scikit-learn`, `matplotlib`, `streamlit`  
+- **Deployment:** Streamlit + ngrok (for Colab public URL)  
+- **Environment:** Google Colab / Local Python  
+
+---
+
+## ▶️ Quickstart
+
+### 1. Clone repo
+git clone https://github.com/your-username/iot-predictive-maintenance.git
+cd iot-predictive-maintenance
+
+### 2. Install requirements
 pip install -r requirements.txt
 
-**Download the Dataset**:
-- The dataset is automatically downloaded and extracted when you run the code (Step 1). Alternatively, you can manually download it from here and place it in the project directory as CMAPSSv2.zip.
+### 3. Run app (local)
+streamlit run rt_maint.py
 
-**Run the Project**:
-- The project is divided into 9 steps, each in a separate Jupyter notebook cell or script. You can run the steps sequentially in a Jupyter notebook or as a single script (main.py).
-- To run the dashboard locally:
-streamlit run app.py
-To deploy using ngrok (for public access), set your ngrok authtoken in app.py and run the deployment step (Step 9).
-
-## Usage
-1. Run the Dashboard Locally:
-- After setting up the project, run:
-  streamlit run app.py
-  Open the provided URL (e.g., http://localhost:8501) in your browser.
-
-2. Navigate the Dashboard:
-• RUL Prediction: Upload a CSV file with sensor data (e.g., test_sensor_data.csv) to predict RUL.
-• Real-Time Streaming: View simulated real-time RUL predictions.
-• Exploratory Data Analysis: Visualize RUL distributions, sensor trends, and correlations.
-• Explainable AI: View SHAP analysis for feature importance.
-• Anomaly Detection: Upload a CSV file to detect anomalies in sensor data.
-
-3.Example Input:
-• Use test_sensor_data.csv (generated in Step 8) as a sample input for RUL prediction and anomaly detection. The file contains the last 100 rows of normalized sensor data for the first 10 flights.
-
-Cloud Deployment(Optional)
-Option 1: Streamlit Community Cloud (Recommended for Prototyping)
-1.	Push your repository to GitHub.
-2.	Sign up for Streamlit Community Cloud (https://streamlit.io/cloud).
-3.	Connect your GitHub account and select your repository.
-4.	Specify the main script (app.py) and deploy the app.
-5.	Note: The N-CMAPSS dataset is too large for Streamlit Cloud’s storage. Modify app.py to download the dataset from a cloud storage service (e.g., Google Drive, AWS S3) at runtime:
-
-import gdown
-url = "your-google-drive-link-to-CMAPSSv2.zip"
-gdown.download(url, "CMAPSSv2.zip", quiet=False)
-
-## Project Structure
-your-repo-name/
-│
-├── app.py                  # Streamlit dashboard script
-├── main.py                 # Main script with all steps (optional)
-├── requirements.txt        # Python dependencies
-├── test_sensor_data.csv    # Sample input data for the dashboard
-├── rul_lstm_model.h5       # Trained LSTM model for RUL prediction
-├── autoencoder.keras       # Trained autoencoder for anomaly detection
-├── CMAPSSv2/               # Directory for the N-CMAPSS dataset (created during setup)
-│   ├── train_subset.csv
-│   ├── train_flight_subset.csv
-│   └── data_set/
-│       └── N-CMAPSS_DS01-005.h5
-└── README.md               # This file
-
-Results
-• RUL Prediction: The LSTM model achieves a test RMSE of 2.95 flights, meaning predictions are within ±3 flights of the actual RUL.
-• Anomaly Detection: The autoencoder detects anomalies in the test set, identifying potential issues in sensor data.
-• EDA: Visualizations show RUL distributions, sensor trends, and correlations for the first 10 flights.
-• SHAP Analysis: SHAP plots highlight the most important sensor features for RUL predictions.
-
-**Sample Output**:
-• Predicted RUL for test_sensor_data.csv: 38.95 flights.
-• RUL Variance (First 10 Flights): 98.1031.
-• Sensor Trends: Sharp drop in sensor values (T30, T50, P24) in the last 10 time steps, indicating potential degradation.
-
-Contributing
-Contributions are welcome! Please follow these steps:
-- Fork the repository.
-- Create a new branch: git checkout -b feature/your-feature-name.
-- Make your changes and commit: git commit -m "Add your feature".
-- Push to your branch: git push origin feature/your-feature-name.
-- Create a pull request.
-
-License
-This project is licensed under the MIT License. 
+### 4. Run app (Colab with ngrok)
+!pip install streamlit pyngrok
+!pkill -f streamlit || true
+!streamlit run rt_maint.py --server.port 8501 &>/content/logs.txt &
+from pyngrok import ngrok
+ngrok.set_auth_token("YOUR_TOKEN")
+print(ngrok.connect(8501))
 
 
-### Additional Notes
-1. **Improving RUL Predictions**:
-   - The predicted RUL (38.95 flights) is lower than expected (90–99). To improve predictions, consider:
-     - Retraining the model on a larger dataset (e.g., all units and cycles) to improve generalization.
-     - Adding more features (e.g., scenario descriptors like `alt`, `Mach`) to the model.
-     - Tuning the LSTM architecture (e.g., more layers, different units) or hyperparameters (e.g., learning rate, batch size).
+### 📈 Example Results
+**Normal running:** risks ~0.2–0.4, no alerts.
 
-2. **Enhancing the Dashboard**:
-   - Add a feature to display the actual RUL alongside the predicted RUL for comparison.
-   - Include a download button for EDA plots and SHAP analysis results.
-   - Add a page to visualize the autoencoder’s reconstruction errors for anomaly detection.
+**Spikes:** surges in vibration/temperature push risk ≥ threshold.
 
-3. **README Customization**:
-   - Replace `your-username` and `your-repo-name` in the README with your actual GitHub username and repository name.
-   - If you have a specific license (e.g., MIT, Apache), create a `LICENSE` file and link to it in the README.
-   - Add screenshots of the dashboard (e.g., the sensor trends plot) to the README to make it more visually appealing.
+**Drift injection:** PSI rises, flagged in drift tab.
 
-Let me know if you’d like to explore any of these improvements or need help with deployment!
+**Metrics (sample run):**
+| Metric          | Value                    |
+| --------------- | ------------------------ |
+| Avg Risk        | 0.42                     |
+| Max Risk        | 0.98 (S03)               |
+| Alerts Raised   | 7 in last 10 mins        |
+| PSI (Vibration) | 0.27 → significant drift |
 
-
-
+## 📂 Project Structure
+├── rt_maint.py              # Main Streamlit app
+├── requirements.txt         # Dependencies
+├── README.md                # Project documentation
+└── screenshots/             # Saved screenshots for README
